@@ -33,6 +33,7 @@ services:
   mongodb:
     image: mongo
     container_name: mongo_db
+    mem_limit: 512m
     ports:
       - 27017:27017
     volumes:
@@ -43,10 +44,11 @@ services:
     networks:
       - microservices-net
     healthcheck:
-      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
-      interval: 5s
+      test: [ "CMD", "mongosh", "-u", "hawk", "-p", "hawk", "--authenticationDatabase", "admin", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   mongo-express:
     image: mongo-express
